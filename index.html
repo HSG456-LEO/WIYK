@@ -1,0 +1,1881 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+<title>What's in the Kitchen</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper: #EDE6D6;
+    --paper-dark: #E1D6BC;
+    --cream: #F8F2E4;
+    --ink: #221F19;
+    --ink-soft: #57503F;
+    --forest: #1F3A2E;
+    --forest-light: #2F5340;
+    --mustard: #D9A441;
+    --mustard-deep: #B9822B;
+    --brick: #A6432D;
+    --line: #C9BFA0;
+    --line-soft: #DAD1B4;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--paper);
+    background-image:
+      radial-gradient(circle at 1px 1px, rgba(34,31,25,0.05) 1px, transparent 0);
+    background-size: 18px 18px;
+    color:var(--ink);
+    font-family:'Public Sans', sans-serif;
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+  }
+  .app{
+    max-width:480px;
+    margin:0 auto;
+    min-height:100vh;
+    background:transparent;
+    padding:0 0 48px;
+    position:relative;
+  }
+  header.top{
+    padding:28px 24px 18px;
+  }
+  .eyebrow-free-title{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:29px;
+    line-height:1.15;
+    letter-spacing:-0.01em;
+    color:var(--forest);
+    margin:0 0 6px;
+  }
+  .top p{
+    margin:0;
+    color:var(--ink-soft);
+    font-size:15px;
+    line-height:1.5;
+    max-width:34ch;
+  }
+  section.panel{
+    padding:0 24px;
+  }
+
+  /* --- capture card --- */
+  .capture-card{
+    background:var(--forest);
+    border-radius:22px;
+    padding:22px;
+    color:var(--cream);
+    position:relative;
+    overflow:hidden;
+    margin-top:6px;
+  }
+  .capture-card::after{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:
+      radial-gradient(120% 90% at 85% -10%, rgba(217,164,65,0.35), transparent 60%);
+    pointer-events:none;
+  }
+  .viewfinder{
+    position:relative;
+    aspect-ratio: 4/3;
+    border-radius:14px;
+    border:1.5px dashed rgba(248,242,228,0.45);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:rgba(0,0,0,0.12);
+    overflow:hidden;
+  }
+  .viewfinder img{
+    width:100%;height:100%;object-fit:cover;
+    display:block;
+  }
+  .viewfinder .hint{
+    text-align:center;
+    padding:20px;
+    color:rgba(248,242,228,0.75);
+    font-size:13.5px;
+    line-height:1.5;
+  }
+  .viewfinder .hint svg{display:block;margin:0 auto 10px;opacity:0.85;}
+  .corner{
+    position:absolute; width:20px; height:20px;
+    border-color: rgba(248,242,228,0.7);
+    border-style: solid;
+  }
+  .corner.tl{top:8px;left:8px;border-width:2px 0 0 2px;border-top-left-radius:6px;}
+  .corner.tr{top:8px;right:8px;border-width:2px 2px 0 0;border-top-right-radius:6px;}
+  .corner.bl{bottom:8px;left:8px;border-width:0 0 2px 2px;border-bottom-left-radius:6px;}
+  .corner.br{bottom:8px;right:8px;border-width:0 2px 2px 0;border-bottom-right-radius:6px;}
+
+  .capture-actions{
+    display:flex;
+    gap:10px;
+    margin-top:14px;
+    position:relative;
+  }
+  button{font-family:inherit;cursor:pointer;}
+  .btn{
+    border:none;
+    border-radius:11px;
+    padding:13px 16px;
+    font-size:14.5px;
+    font-weight:600;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    transition:transform .12s ease, opacity .12s ease;
+  }
+  .btn:active{transform:scale(0.97);}
+  .btn-primary{
+    background:var(--mustard);
+    color:var(--forest);
+    flex:1;
+  }
+  .btn-primary:hover{background:var(--mustard-deep);}
+  .btn-ghost{
+    background:rgba(248,242,228,0.12);
+    color:var(--cream);
+    border:1px solid rgba(248,242,228,0.35);
+  }
+  .btn-block{width:100%;}
+  .btn:disabled{opacity:0.45; cursor:not-allowed; transform:none;}
+
+  .or-divider{
+    display:flex;align-items:center;gap:12px;
+    margin:20px 24px 4px;
+    color:var(--ink-soft);
+    font-size:12.5px;
+  }
+  .or-divider::before,.or-divider::after{
+    content:"";flex:1;height:1px;background:var(--line);
+  }
+
+  .type-row{
+    display:flex;gap:8px;margin-top:14px;
+  }
+  .type-row input{
+    flex:1;
+    border:1.5px solid var(--line);
+    background:var(--cream);
+    border-radius:11px;
+    padding:12px 14px;
+    font-size:15px;
+    color:var(--ink);
+    font-family:inherit;
+  }
+  .type-row input:focus{outline:2px solid var(--forest-light); outline-offset:1px;}
+  .add-btn{
+    background:var(--forest);
+    color:var(--cream);
+    border-radius:11px;
+    padding:0 18px;
+    font-weight:600;
+    font-size:14.5px;
+  }
+
+  .chips{
+    display:flex;flex-wrap:wrap;gap:8px;
+    margin-top:16px;
+  }
+  .chip{
+    background:var(--cream);
+    border:1.5px solid var(--line);
+    border-radius:999px;
+    padding:8px 8px 8px 14px;
+    font-size:14px;
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    color:var(--ink);
+  }
+  .chip button{
+    background:var(--paper-dark);
+    border:none;
+    border-radius:999px;
+    width:20px;height:20px;
+    display:flex;align-items:center;justify-content:center;
+    color:var(--ink-soft);
+    font-size:13px;
+    line-height:1;
+    padding:0;
+  }
+  .chip.detected{border-color:var(--forest-light); background:#E7EFE9;}
+
+  .filter-section{margin-top:26px;}
+  .filter-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;}
+  .filter-chip{
+    background:var(--cream);
+    border:1.5px solid var(--line);
+    border-radius:999px;
+    padding:8px 14px;
+    font-size:13.5px;
+    font-weight:600;
+    color:var(--ink-soft);
+  }
+  .filter-chip.active{
+    background:var(--forest);
+    border-color:var(--forest);
+    color:var(--cream);
+  }
+
+  .top-row{
+    display:flex; align-items:flex-start; justify-content:space-between; gap:12px;
+  }
+  .nav-link{
+    background:none; border:none; padding:6px 0;
+    color:var(--forest);
+    font-size:13.5px; font-weight:600;
+    text-decoration:underline; text-underline-offset:3px;
+    white-space:nowrap;
+  }
+  .back-link{
+    background:none; border:none; padding:0;
+    color:var(--ink-soft);
+    font-size:13.5px; font-weight:600;
+    display:inline-flex; align-items:center; gap:5px;
+  }
+
+  .top-nav{
+    display:flex; gap:16px;
+    padding:16px 24px 0;
+    flex-wrap:wrap;
+  }
+  .top-nav-link{
+    background:none; border:none; padding:0;
+    color:var(--ink-soft);
+    font-size:13px; font-weight:600;
+  }
+  .top-nav-link.active{
+    color:var(--forest);
+    text-decoration:underline;
+    text-underline-offset:3px;
+  }
+
+  .banner-week{
+    display:flex; align-items:center; gap:10px;
+    background:var(--mustard);
+    color:var(--forest);
+    border-radius:14px;
+    padding:12px 15px;
+    margin-top:16px;
+    font-size:13.5px;
+    font-weight:600;
+    text-align:left;
+    border:none;
+    width:100%;
+  }
+  .banner-week .sub{font-weight:500; opacity:0.85; font-size:12.5px; display:block; margin-top:1px;}
+
+  .field-group{margin-top:16px;}
+  .field-label{
+    display:block; font-size:13px; font-weight:600;
+    color:var(--ink-soft); margin-bottom:6px;
+  }
+  .field-hint{font-size:12px; color:var(--ink-soft); margin-top:5px;}
+  input[type=text].field-input, input[type=email].field-input, input[type=number].field-input, textarea.field-input{
+    width:100%;
+    border:1.5px solid var(--line);
+    background:var(--cream);
+    border-radius:11px;
+    padding:12px 14px;
+    font-size:15px;
+    color:var(--ink);
+    font-family:inherit;
+  }
+  textarea.field-input{resize:vertical; min-height:76px; line-height:1.5;}
+  input.field-input:focus, textarea.field-input:focus{outline:2px solid var(--forest-light); outline-offset:1px;}
+
+  .account-card{
+    background:var(--cream);
+    border:1px solid var(--line);
+    border-radius:16px;
+    padding:20px;
+    margin-top:6px;
+  }
+  .account-row{display:flex; justify-content:space-between; padding:9px 0; border-bottom:1px dashed var(--line); font-size:14.5px;}
+  .account-row:last-child{border-bottom:none;}
+  .account-row .label{color:var(--ink-soft);}
+  .account-row .value{font-weight:600;}
+  .account-row .value.verified{color:var(--forest-light);}
+  .account-row .value.unverified{color:var(--brick);}
+
+  .code-display{
+    background:var(--forest);
+    color:var(--cream);
+    border-radius:14px;
+    padding:22px;
+    text-align:center;
+    margin-top:6px;
+  }
+  .code-display .digits{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:36px;
+    letter-spacing:8px;
+    margin:4px 0 2px;
+  }
+  .code-display .caption{font-size:12.5px; color:rgba(248,242,228,0.75); line-height:1.5;}
+  input.code-input{
+    width:100%;
+    text-align:center;
+    letter-spacing:8px;
+    font-size:22px;
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    border:1.5px solid var(--line);
+    background:var(--cream);
+    border-radius:11px;
+    padding:14px;
+    color:var(--ink);
+  }
+  input.code-input:focus{outline:2px solid var(--forest-light); outline-offset:1px;}
+
+  .community-list{display:flex;flex-direction:column;gap:12px;padding:16px 24px 0;}
+  .community-card{
+    background:var(--cream);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:14px 16px;
+    display:flex; justify-content:space-between; align-items:flex-start; gap:10px;
+  }
+  .community-card .info .t{font-family:'Fraunces', serif; font-weight:600; font-size:16px; color:var(--forest); margin-bottom:3px;}
+  .community-card .info .m{font-size:12.5px; color:var(--ink-soft);}
+  .community-card .info .a{font-size:12px; color:var(--ink-soft); margin-top:2px;}
+  .community-card button.view{
+    background:var(--forest); color:var(--cream); border:none;
+    border-radius:8px; padding:8px 13px; font-size:12.5px; font-weight:600;
+  }
+
+  .author-line{font-size:13px; color:var(--ink-soft); margin:-4px 0 14px;}
+  .week-tag{
+    display:inline-block;
+    background:var(--mustard); color:var(--forest);
+    border-radius:999px; padding:3px 10px; font-size:11.5px; font-weight:700;
+    margin-bottom:6px;
+  }
+
+  .saved-list{display:flex;flex-direction:column;gap:12px;padding:16px 24px 0;}
+  .saved-card{
+    background:var(--cream);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:14px 16px;
+    display:flex; justify-content:space-between; align-items:flex-start; gap:10px;
+  }
+  .saved-card .info .t{
+    font-family:'Fraunces', serif; font-weight:600; font-size:16px;
+    color:var(--forest); margin-bottom:3px;
+  }
+  .saved-card .info .m{font-size:12.5px; color:var(--ink-soft);}
+  .saved-card .col{display:flex; flex-direction:column; align-items:flex-end; gap:8px;}
+  .saved-card button.view{
+    background:var(--forest); color:var(--cream); border:none;
+    border-radius:8px; padding:8px 13px; font-size:12.5px; font-weight:600;
+  }
+  .saved-card button.remove{
+    background:none; border:none; color:var(--brick);
+    font-size:12px; padding:0; text-decoration:underline; text-underline-offset:2px;
+  }
+  .empty-state{padding:40px 24px; text-align:center; color:var(--ink-soft); font-size:14px; line-height:1.6;}
+
+  .btn-outline{
+    background:var(--cream);
+    color:var(--forest);
+    border:1.5px solid var(--forest);
+  }
+  .btn-outline.saved{
+    background:var(--forest);
+    color:var(--cream);
+  }
+
+  .find-wrap{margin-top:22px;}
+  .find-wrap .btn{padding:15px 16px; font-size:15.5px;}
+  .helper-text{
+    text-align:center;
+    color:var(--ink-soft);
+    font-size:13px;
+    margin-top:9px;
+  }
+
+  /* --- loading --- */
+  .loading-block{
+    display:flex; align-items:center; gap:12px;
+    padding:16px 24px;
+    color:var(--ink-soft);
+    font-size:14px;
+  }
+  .spinner{
+    width:18px;height:18px;
+    border-radius:50%;
+    border:2.5px solid var(--line);
+    border-top-color:var(--forest);
+    animation:spin .8s linear infinite;
+    flex-shrink:0;
+  }
+  @keyframes spin{to{transform:rotate(360deg);}}
+
+  .error-block{
+    margin:16px 24px 0;
+    background:#F3E3DD;
+    border:1px solid var(--brick);
+    color:var(--brick);
+    border-radius:12px;
+    padding:14px 16px;
+    font-size:14px;
+    line-height:1.5;
+  }
+  .error-block button{
+    margin-top:10px;
+    background:var(--brick);
+    color:var(--cream);
+    border-radius:8px;
+    padding:8px 14px;
+    font-size:13.5px;
+    font-weight:600;
+    border:none;
+  }
+
+  /* --- recipe card --- */
+  .recipe-wrap{padding:8px 20px 0;}
+  .recipe-card{
+    background:var(--cream);
+    border-radius:6px;
+    border:1px solid var(--line);
+    padding:26px 22px 22px;
+    position:relative;
+    box-shadow: 0 1px 0 var(--line-soft), 0 14px 30px -18px rgba(34,31,25,0.35);
+  }
+  .recipe-card::before{
+    content:"";
+    position:absolute;
+    top:0;left:24px;right:24px;height:0;
+    background-image: radial-gradient(circle 5px, var(--paper) 5px, transparent 5.5px);
+    background-position: top;
+    background-size: 20px 10px;
+    background-repeat: repeat-x;
+    transform:translateY(-5px);
+  }
+  .recipe-meta{
+    display:flex;gap:14px;
+    color:var(--ink-soft);
+    font-size:13px;
+    margin:6px 0 4px;
+  }
+  .recipe-title{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:26px;
+    line-height:1.18;
+    color:var(--forest);
+    margin:2px 0 8px;
+  }
+  .recipe-desc{
+    font-size:14.5px;
+    color:var(--ink-soft);
+    line-height:1.55;
+    margin:0 0 18px;
+  }
+  .divider{
+    border:none;border-top:1px dashed var(--line);
+    margin:18px 0;
+  }
+  h3.section-title{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:16.5px;
+    color:var(--forest);
+    margin:0 0 12px;
+  }
+  ul.using-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:9px;}
+  ul.using-list li{
+    display:flex;align-items:flex-start;gap:10px;
+    font-size:14.5px;
+    line-height:1.4;
+  }
+  ul.using-list li svg{flex-shrink:0;margin-top:2px;color:var(--forest-light);}
+  ul.using-list li.flagged-equipment svg{color:var(--brick);}
+
+  ol.steps{list-style:none;margin:0;padding:0;counter-reset:step;display:flex;flex-direction:column;gap:16px;}
+  ol.steps li{
+    counter-increment:step;
+    display:flex;gap:12px;
+  }
+  ol.steps li::before{
+    content:counter(step);
+    flex-shrink:0;
+    width:26px;height:26px;
+    border-radius:50%;
+    background:var(--forest);
+    color:var(--cream);
+    font-size:12.5px;
+    font-weight:700;
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Public Sans',sans-serif;
+  }
+  .step-body .step-title{font-weight:600; font-size:14.5px; margin-bottom:3px;}
+  .step-body .step-detail{font-size:14px; color:var(--ink-soft); line-height:1.55;}
+
+  .elevate-chip{
+    display:flex; align-items:flex-start; gap:10px;
+    width:100%;
+    text-align:left;
+    background:var(--paper);
+    border:1.5px solid var(--line);
+    border-radius:12px;
+    padding:12px 13px;
+    margin-bottom:9px;
+    font-family:inherit;
+  }
+  .elevate-chip:last-child{margin-bottom:0;}
+  .elevate-chip.selected{
+    border-color:var(--mustard-deep);
+    background:#FBF0DA;
+  }
+  .elevate-check{
+    flex-shrink:0;
+    width:20px;height:20px;
+    border-radius:6px;
+    border:1.5px solid var(--line);
+    background:var(--cream);
+    display:flex;align-items:center;justify-content:center;
+    margin-top:1px;
+  }
+  .elevate-chip.selected .elevate-check{
+    background:var(--mustard-deep);
+    border-color:var(--mustard-deep);
+  }
+  .elevate-text .name{font-weight:600; font-size:14.5px; color:var(--ink);}
+  .elevate-text .reason{font-size:13px; color:var(--ink-soft); margin-top:2px; line-height:1.4;}
+
+  .staple-list{display:flex; flex-direction:column; gap:10px;}
+  .staple-row{display:flex; gap:10px; font-size:14px; line-height:1.5;}
+  .staple-row .dot{width:5px;height:5px;border-radius:50%;background:var(--brick);margin-top:8px;flex-shrink:0;}
+  .staple-row .name{font-weight:600;}
+  .staple-row .reason{color:var(--ink-soft);}
+
+  .recipe-actions{
+    display:flex; flex-direction:column; gap:10px;
+    margin-top:22px;
+  }
+  .start-over{
+    text-align:center;
+    color:var(--ink-soft);
+    font-size:13.5px;
+    background:none;
+    border:none;
+    padding:6px;
+    text-decoration:underline;
+    text-underline-offset:3px;
+  }
+
+  input[type=file]{display:none;}
+  .visually-hidden{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);}
+</style>
+</head>
+<body>
+<div class="app" id="app"></div>
+
+<script>
+// Outside Claude's artifact preview, window.storage doesn't exist.
+// This fallback makes the app fully functional on its own, using the
+// browser's localStorage instead. IMPORTANT LIMITATION: localStorage is
+// per-browser/per-device, so "shared" data (community recipes, Recipe of
+// the Week) will only be visible on THIS device, not shared across real
+// visitors the way it is in the Claude preview. True cross-user sharing
+// needs a real backend database (see the README for next steps on that).
+if (!window.storage) {
+  const nsKey = (key, shared) => (shared ? 'shared:' : 'personal:') + key;
+  window.storage = {
+    async get(key, shared) {
+      const raw = localStorage.getItem(nsKey(key, shared));
+      if (raw === null) throw new Error('Key not found');
+      return { key, value: raw, shared: !!shared };
+    },
+    async set(key, value, shared) {
+      localStorage.setItem(nsKey(key, shared), value);
+      return { key, value, shared: !!shared };
+    },
+    async delete(key, shared) {
+      localStorage.removeItem(nsKey(key, shared));
+      return { key, deleted: true, shared: !!shared };
+    },
+    async list(prefix, shared) {
+      const base = shared ? 'shared:' : 'personal:';
+      const full = base + (prefix || '');
+      const keys = [];
+      for (let i = 0; i < localStorage.length; i++) {
+        const k = localStorage.key(i);
+        if (k.startsWith(full)) keys.push(k.slice(base.length));
+      }
+      return { keys, prefix: prefix || undefined, shared: !!shared };
+    }
+  };
+}
+
+const DIETARY_OPTIONS = ["Vegetarian", "Vegan", "Gluten-free", "Dairy-free", "Nut-free", "Low-carb"];
+const EQUIPMENT_OPTIONS = ["Stovetop", "Oven", "Microwave", "Air fryer", "Slow cooker", "Instant Pot", "Blender", "Grill"];
+const BASIC_EQUIPMENT_KEYWORDS = ["knife", "cutting board", "bowl", "pot", "pan", "skillet", "sheet", "baking dish", "saucepan", "colander", "whisk", "spatula", "tongs", "measuring", "peeler", "grater", "ladle", "stovetop", "oven"];
+
+function isBasicEquipment(name) {
+  const lower = (name || "").toLowerCase();
+  return BASIC_EQUIPMENT_KEYWORDS.some(k => lower.includes(k));
+}
+
+function isEquipmentFlagged(name, availableList) {
+  if (!availableList || !availableList.length) return false;
+  if (isBasicEquipment(name)) return false;
+  const lower = (name || "").toLowerCase();
+  return !availableList.some(a => {
+    const al = a.toLowerCase();
+    return lower.includes(al) || al.includes(lower);
+  });
+}
+
+const SAMPLE_RECIPE = {
+  title: "Weeknight Chicken & Broccoli Stir-Fry",
+  servings: "3 servings",
+  time: "25 min",
+  description: "A fast, saucy stir-fry that turns basic weeknight staples into something worth seconds of.",
+  usedIngredients: ["chicken thighs", "broccoli", "garlic", "soy sauce", "rice"],
+  equipment: [
+    { name: "large skillet", note: "" },
+    { name: "wok", note: "a wide skillet works just as well if you don't have one" },
+    { name: "rice cooker", note: "a covered saucepan on the stovetop does the same job" },
+    { name: "cutting board", note: "" },
+    { name: "chef's knife", note: "" }
+  ],
+  equipmentAvailable: ["Stovetop"],
+  steps: [
+    { title: "Cook the rice", detail: "Start your rice cooking according to package directions so it's ready when the stir-fry is." },
+    { title: "Prep the chicken and broccoli", detail: "Cut the chicken thighs into bite-sized pieces and chop the broccoli into small florets." },
+    { title: "Sear the chicken", detail: "Heat oil in a large skillet over high heat and cook the chicken until browned, about 5 minutes." },
+    { title: "Add the broccoli and garlic", detail: "Add the broccoli and minced garlic, stirring frequently for 3-4 minutes until the broccoli turns bright green." },
+    { title: "Sauce it", detail: "Pour in the soy sauce, toss to coat, and cook for another minute until everything's glossy." },
+    { title: "Serve", detail: "Spoon over the cooked rice and serve immediately." }
+  ],
+  elevate: [
+    { name: "sesame oil", reason: "a small drizzle at the end adds a nutty depth the soy sauce alone won't give you" },
+    { name: "fresh ginger", reason: "grated in with the garlic, it brightens the whole dish" },
+    { name: "red chili flakes", reason: "a pinch adds gentle heat without overpowering the sauce" }
+  ],
+  staples: [
+    { name: "cornstarch", reason: "handy for thickening stir-fry sauces into something glossier and clingier" },
+    { name: "rice vinegar", reason: "a splash balances the saltiness of soy sauce in most stir-fries" },
+    { name: "sesame seeds", reason: "an easy garnish that makes weeknight dishes feel a little more finished" }
+  ],
+  dietaryTags: ["Dairy-free"]
+};
+
+const state = {
+  screen: 'input',            // 'input' | 'recipe' | 'saved' | 'account' | 'community' | 'upload'
+  ingredients: [],            // [{name, source: 'typed'|'photo'}]
+  dietaryFilters: new Set(),
+  equipmentFilters: new Set(),
+  photoDataUrl: null,
+  analyzingPhoto: false,
+  generatingRecipe: false,
+  error: null,
+  recipe: null,
+  recipeSavedKey: null,       // storage key if the current recipe is saved
+  recipeCommunityKey: null,   // storage key if the current recipe came from the community
+  saving: false,
+  selectedExtras: new Set(),
+  savedRecipes: [],           // [{key, recipe}]
+  loadingSaved: false,
+
+  account: null,              // {name, age, email, verified} | null
+  accountLoaded: false,
+  accountEditing: false,
+  accountError: null,
+  savingAccount: false,
+  accountPromptReason: null,  // shown on the account screen when routed here to unlock a feature
+
+  pendingVerificationCode: null,
+  verificationError: null,
+  verifyingCode: false,
+  verifyReturnScreen: 'account', // where to go after successful verification
+
+  communityRecipes: [],       // [{key, recipe}]
+  loadingCommunity: false,
+
+  uploadDietaryTags: new Set(),
+  uploadError: null,
+  submittingUpload: false,
+
+  recipeOfWeek: null,         // {key, title, author}
+  flaggingWeek: false,
+};
+
+const el = (tag, attrs = {}, children = []) => {
+  const node = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs)) {
+    if (k === 'class') node.className = v;
+    else if (k === 'html') node.innerHTML = v;
+    else if (k.startsWith('on') && typeof v === 'function') node.addEventListener(k.slice(2), v);
+    else node.setAttribute(k, v);
+  }
+  (Array.isArray(children) ? children : [children]).forEach(c => {
+    if (c === null || c === undefined) return;
+    node.appendChild(typeof c === 'string' ? document.createTextNode(c) : c);
+  });
+  return node;
+};
+
+function render() {
+  const app = document.getElementById('app');
+  app.innerHTML = '';
+  if (state.screen === 'input') app.appendChild(renderInputScreen());
+  else if (state.screen === 'saved') app.appendChild(renderSavedScreen());
+  else if (state.screen === 'account') app.appendChild(renderAccountScreen());
+  else if (state.screen === 'verify') app.appendChild(renderVerifyScreen());
+  else if (state.screen === 'community') app.appendChild(renderCommunityScreen());
+  else if (state.screen === 'upload') app.appendChild(renderUploadScreen());
+  else app.appendChild(renderRecipeScreen());
+}
+
+// ---------- API helpers ----------
+async function callClaude(messages, { maxTokens = 1200 } = {}) {
+  const response = await fetch("/.netlify/functions/generate", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      max_tokens: maxTokens,
+      messages
+    })
+  });
+  if (!response.ok) {
+    const errBody = await response.json().catch(() => ({}));
+    throw new Error(errBody.error || "API request failed");
+  }
+  const data = await response.json();
+  const text = data.content.map(b => b.text || "").join("\n");
+  return text;
+}
+
+function parseJsonLoose(text) {
+  const cleaned = text.replace(/```json/g, "").replace(/```/g, "").trim();
+  return JSON.parse(cleaned);
+}
+
+async function analyzePhoto(dataUrl) {
+  const base64 = dataUrl.split(",")[1];
+  const text = await callClaude([{
+    role: "user",
+    content: [
+      { type: "image", source: { type: "base64", media_type: "image/jpeg", data: base64 } },
+      { type: "text", text: "List the distinct food ingredients visible in this photo. Respond with ONLY a JSON array of short lowercase ingredient names, nothing else. Example: [\"eggs\",\"spinach\",\"cheddar\"]. If you truly see no food, respond with []." }
+    ]
+  }], { maxTokens: 300 });
+  return parseJsonLoose(text);
+}
+
+async function generateRecipe(ingredientNames, mustInclude, dietaryFilters, equipmentFilters) {
+  const prompt = `You are a resourceful home cooking assistant. The cook has these ingredients available: ${ingredientNames.join(", ") || "(none listed)"}.
+${mustInclude && mustInclude.length ? `They also want to incorporate these additional ingredients: ${mustInclude.join(", ")}.` : ""}
+${dietaryFilters && dietaryFilters.length ? `The recipe MUST follow these dietary requirements: ${dietaryFilters.join(", ")}. Do not suggest ingredients (including elevate suggestions) that violate these.` : ""}
+${equipmentFilters && equipmentFilters.length ? `The cook only has this equipment available: ${equipmentFilters.join(", ")}. The recipe MUST NOT require any other major equipment or appliance. Basic hand tools (knives, cutting boards, mixing bowls, measuring cups/spoons) can always be assumed. If a listed equipment item is not in the cook's available list, you must not include it — instead adapt the method to use only what they have, and if it changes technique, mention that in the relevant step's detail.` : "Assume a standard home kitchen: stovetop, oven, and basic hand tools. Avoid requiring specialty appliances (e.g. air fryer, Instant Pot, blender) unless the ingredients really call for it."}
+Suggest ONE achievable recipe using mostly what they have. Then suggest a few optional ingredients that would elevate the dish (things they likely don't have), and a few kitchen staples worth keeping stocked that would help with dishes like this in general. Also list the equipment needed to make it — pots, pans, utensils, dishes, appliances — favoring common kitchen equipment where possible. For any equipment item that is a specialty appliance (air fryer, Instant Pot, slow cooker, blender, food processor, grill, etc.) rather than a basic hand tool or standard stovetop/oven pan, use the item's "note" field to briefly mention a workable alternative method using more common equipment, even if that appliance was available to the cook.
+Respond with ONLY valid JSON, no other text, matching this shape exactly:
+{
+  "title": "string",
+  "servings": "string, e.g. '2 servings'",
+  "time": "string, e.g. '25 min'",
+  "description": "one encouraging sentence about the dish",
+  "usedIngredients": ["from their list, the ones actually used"],
+  "equipment": [{"name": "e.g. 'large skillet'", "note": "optional short note, e.g. 'or a deep sauté pan works too' — empty string if none"}],
+  "steps": [{"title": "short step name", "detail": "1-2 sentence instruction"}],
+  "elevate": [{"name": "ingredient", "reason": "one short sentence on what it adds"}],
+  "staples": [{"name": "pantry item", "reason": "one short sentence on why it's worth keeping around"}]
+}
+Keep steps to 4-6. Keep elevate and staples to 3 items each. Keep equipment to the essentials, usually 3-6 items.`;
+  const text = await callClaude([{ role: "user", content: prompt }], { maxTokens: 1400 });
+  return parseJsonLoose(text);
+}
+
+// ---------- input screen ----------
+function renderInputScreen() {
+  const wrap = el('div');
+
+  wrap.appendChild(renderTopNav());
+
+  wrap.appendChild(el('header', { class: 'top' }, [
+    el('h1', { class: 'eyebrow-free-title' }, "What's in your kitchen?"),
+    el('p', {}, "Snap a photo of what you've got, or type it in — Harvey will find something worth cooking."),
+    state.recipeOfWeek ? el('button', { class: 'banner-week', onclick: viewRecipeOfWeek }, [
+      "🌟 Recipe of the Week: " + state.recipeOfWeek.title,
+      el('span', { class: 'sub' }, state.recipeOfWeek.author ? `by ${state.recipeOfWeek.author}` : "")
+    ]) : null
+  ]));
+
+  wrap.appendChild(el('section', { class: 'panel' }, [ renderCaptureCard() ]));
+
+  wrap.appendChild(el('div', { class: 'or-divider' }, "or add ingredients by hand"));
+
+  wrap.appendChild(el('section', { class: 'panel' }, [ renderTypeRow(), renderChips(), renderFilterSection(), renderEquipmentSection() ]));
+
+  if (state.error) {
+    wrap.appendChild(el('div', { class: 'error-block' }, [
+      el('div', {}, state.error),
+      el('button', { onclick: () => { state.error = null; render(); } }, "Dismiss")
+    ]));
+  }
+
+  wrap.appendChild(el('section', { class: 'panel', style: '' }, [ renderFindButton() ]));
+
+  return wrap;
+}
+
+function renderFilterSection() {
+  const wrap = el('div', { class: 'filter-section' });
+  wrap.appendChild(el('h3', { class: 'section-title', style: 'font-size:14.5px;' }, "Dietary filters"));
+  const chips = el('div', { class: 'filter-chips' });
+  DIETARY_OPTIONS.forEach(opt => {
+    const active = state.dietaryFilters.has(opt);
+    chips.appendChild(el('button', {
+      class: 'filter-chip' + (active ? ' active' : ''),
+      onclick: () => {
+        if (active) state.dietaryFilters.delete(opt);
+        else state.dietaryFilters.add(opt);
+        render();
+      }
+    }, opt));
+  });
+  wrap.appendChild(chips);
+  return wrap;
+}
+
+function renderEquipmentSection() {
+  const wrap = el('div', { class: 'filter-section' });
+  wrap.appendChild(el('h3', { class: 'section-title', style: 'font-size:14.5px;' }, "Equipment you have"));
+  wrap.appendChild(el('p', { style: 'font-size:12.5px; color:var(--ink-soft); margin:-6px 0 0;' }, "Leave blank to assume a standard stovetop and oven."));
+  const chips = el('div', { class: 'filter-chips' });
+  EQUIPMENT_OPTIONS.forEach(opt => {
+    const active = state.equipmentFilters.has(opt);
+    chips.appendChild(el('button', {
+      class: 'filter-chip' + (active ? ' active' : ''),
+      onclick: () => {
+        if (active) state.equipmentFilters.delete(opt);
+        else state.equipmentFilters.add(opt);
+        render();
+      }
+    }, opt));
+  });
+  wrap.appendChild(chips);
+  return wrap;
+}
+
+function goToSaved() {
+  state.screen = 'saved';
+  render();
+  loadSavedRecipes();
+}
+
+function goToCommunity() {
+  state.screen = 'community';
+  render();
+  loadCommunityRecipes();
+}
+
+function goToAccount(reason) {
+  state.accountPromptReason = reason || null;
+  state.screen = 'account';
+  render();
+}
+
+function goHome() {
+  state.screen = 'input';
+  render();
+}
+
+function renderTopNav() {
+  const bar = el('div', { class: 'top-nav' });
+  const items = [
+    { id: 'input', label: 'Home', go: goHome },
+    { id: 'community', label: 'Community', go: goToCommunity },
+    { id: 'saved', label: 'Saved', go: goToSaved },
+    { id: 'account', label: state.account ? 'Account' : 'Sign up', go: () => goToAccount(null) },
+  ];
+  items.forEach(item => {
+    bar.appendChild(el('button', {
+      class: 'top-nav-link' + (state.screen === item.id ? ' active' : ''),
+      onclick: item.go
+    }, item.label));
+  });
+  return bar;
+}
+
+function renderCaptureCard() {
+  const card = el('div', { class: 'capture-card' });
+
+  const viewfinder = el('div', { class: 'viewfinder' });
+  if (state.photoDataUrl) {
+    viewfinder.appendChild(el('img', { src: state.photoDataUrl, alt: 'Captured ingredients' }));
+  } else {
+    viewfinder.appendChild(el('div', { class: 'hint' }, [
+      el('div', { html: cameraSvg() }),
+      state.analyzingPhoto ? "Harvey's looking at your photo…" : "Your ingredients, framed up"
+    ]));
+  }
+  ['tl','tr','bl','br'].forEach(pos => viewfinder.appendChild(el('div', { class: `corner ${pos}` })));
+  card.appendChild(viewfinder);
+
+  const fileInput = el('input', {
+    type: 'file', accept: 'image/*', capture: 'environment', id: 'photoInput',
+    onchange: handlePhotoSelected
+  });
+  card.appendChild(fileInput);
+
+  const actions = el('div', { class: 'capture-actions' });
+  const takeBtn = el('button', {
+    class: 'btn btn-primary',
+    disabled: state.analyzingPhoto ? 'true' : null,
+    onclick: () => document.getElementById('photoInput').click()
+  }, state.analyzingPhoto ? "Analyzing…" : (state.photoDataUrl ? "Retake photo" : "Take or choose a photo"));
+  actions.appendChild(takeBtn);
+  if (state.photoDataUrl) {
+    actions.appendChild(el('button', {
+      class: 'btn btn-ghost',
+      onclick: () => { state.photoDataUrl = null; render(); }
+    }, "Clear"));
+  }
+  card.appendChild(actions);
+  return card;
+}
+
+function cameraSvg() {
+  return `<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 8.5a1.5 1.5 0 0 1 1.5-1.5h1.6a1 1 0 0 0 .87-.5l.66-1.14A1 1 0 0 1 9.5 5h5a1 1 0 0 1 .87.5l.66 1.14a1 1 0 0 0 .87.5H18.5A1.5 1.5 0 0 1 20 8.5V17a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 17V8.5Z"/><circle cx="12" cy="12.5" r="3.4"/></svg>`;
+}
+
+function handlePhotoSelected(e) {
+  const file = e.target.files && e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      const maxDim = 800;
+      const scale = Math.min(1, maxDim / Math.max(img.width, img.height));
+      canvas.width = img.width * scale;
+      canvas.height = img.height * scale;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
+      state.photoDataUrl = dataUrl;
+      state.error = null;
+      render();
+      runPhotoAnalysis(dataUrl);
+    };
+    img.src = reader.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+async function runPhotoAnalysis(dataUrl) {
+  state.analyzingPhoto = true;
+  render();
+  try {
+    const names = await analyzePhoto(dataUrl);
+    const existing = new Set(state.ingredients.map(i => i.name.toLowerCase()));
+    names.forEach(n => {
+      const clean = String(n).trim().toLowerCase();
+      if (clean && !existing.has(clean)) {
+        state.ingredients.push({ name: clean, source: 'photo' });
+        existing.add(clean);
+      }
+    });
+    if (!names.length) {
+      state.error = "Couldn't spot any ingredients in that photo — try a clearer shot, or add items by hand below.";
+    }
+  } catch (err) {
+    state.error = "Couldn't read that photo just now. You can try again, or type ingredients in below.";
+  } finally {
+    state.analyzingPhoto = false;
+    render();
+  }
+}
+
+function renderTypeRow() {
+  const row = el('div', { class: 'type-row' });
+  const input = el('input', {
+    type: 'text', placeholder: 'e.g. chicken thighs, rice, bell pepper',
+    id: 'typeInput',
+    onkeydown: (e) => { if (e.key === 'Enter') { e.preventDefault(); addTypedIngredient(); } }
+  });
+  row.appendChild(input);
+  row.appendChild(el('button', { class: 'add-btn', onclick: addTypedIngredient }, "Add"));
+  return row;
+}
+
+function addTypedIngredient() {
+  const input = document.getElementById('typeInput');
+  if (!input || !input.value.trim()) return;
+  const parts = input.value.split(',').map(s => s.trim().toLowerCase()).filter(Boolean);
+  const existing = new Set(state.ingredients.map(i => i.name.toLowerCase()));
+  parts.forEach(p => {
+    if (!existing.has(p)) {
+      state.ingredients.push({ name: p, source: 'typed' });
+      existing.add(p);
+    }
+  });
+  input.value = '';
+  render();
+  const el2 = document.getElementById('typeInput');
+  if (el2) el2.focus();
+}
+
+function renderChips() {
+  const wrap = el('div', { class: 'chips' });
+  state.ingredients.forEach((ing, idx) => {
+    const chip = el('div', { class: 'chip' + (ing.source === 'photo' ? ' detected' : '') }, [
+      ing.name,
+      el('button', {
+        'aria-label': `Remove ${ing.name}`,
+        onclick: () => { state.ingredients.splice(idx, 1); render(); }
+      }, "✕")
+    ]);
+    wrap.appendChild(chip);
+  });
+  return wrap;
+}
+
+function renderFindButton() {
+  const wrap = el('div', { class: 'find-wrap' });
+  const hasIngredients = state.ingredients.length > 0;
+  wrap.appendChild(el('button', {
+    class: 'btn btn-primary btn-block',
+    disabled: (!hasIngredients || state.generatingRecipe) ? 'true' : null,
+    onclick: onFindRecipe
+  }, state.generatingRecipe ? "Harvey's thinking…" : "Ask Harvey"));
+  if (!hasIngredients) {
+    wrap.appendChild(el('div', { class: 'helper-text' }, "Add at least one ingredient to get started."));
+  }
+  wrap.appendChild(el('button', { class: 'start-over', style: 'margin-top:10px;', onclick: loadSampleRecipe }, "See an example recipe →"));
+  return wrap;
+}
+
+function loadSampleRecipe() {
+  state.recipe = JSON.parse(JSON.stringify(SAMPLE_RECIPE));
+  state.recipeSavedKey = null;
+  state.recipeCommunityKey = null;
+  state.selectedExtras = new Set();
+  state.error = null;
+  state.screen = 'recipe';
+  render();
+}
+
+async function onFindRecipe() {
+  state.generatingRecipe = true;
+  state.error = null;
+  render();
+  try {
+    const names = state.ingredients.map(i => i.name);
+    const filters = Array.from(state.dietaryFilters);
+    const equipment = Array.from(state.equipmentFilters);
+    const recipe = await generateRecipe(names, [], filters, equipment);
+    recipe.equipmentAvailable = equipment;
+    state.recipe = recipe;
+    state.recipeSavedKey = null;
+    state.recipeCommunityKey = null;
+    state.selectedExtras = new Set();
+    state.screen = 'recipe';
+  } catch (err) {
+    state.error = "Couldn't reach Harvey just now — try again in a moment.";
+  } finally {
+    state.generatingRecipe = false;
+    render();
+  }
+}
+
+// ---------- recipe screen ----------
+function renderRecipeScreen() {
+  const wrap = el('div');
+  wrap.appendChild(renderTopNav());
+  wrap.appendChild(el('header', { class: 'top' }, [
+    el('h1', { class: 'eyebrow-free-title', style: 'font-size:20px;' }, "Harvey's recipe")
+  ]));
+
+  if (state.generatingRecipe) {
+    wrap.appendChild(el('div', { class: 'loading-block' }, [
+      el('div', { class: 'spinner' }),
+      "Harvey's thinking up a recipe…"
+    ]));
+    return wrap;
+  }
+
+  if (state.error) {
+    wrap.appendChild(el('div', { class: 'error-block' }, [
+      el('div', {}, state.error),
+      el('button', { onclick: onFindRecipe }, "Try again")
+    ]));
+  }
+
+  if (!state.recipe) return wrap;
+  const r = state.recipe;
+
+  const card = el('div', { class: 'recipe-card' });
+  card.appendChild(el('div', { class: 'recipe-meta' }, [
+    r.servings ? el('span', {}, r.servings) : null,
+    r.time ? el('span', {}, r.time) : null
+  ].filter(Boolean)));
+  if (state.recipeCommunityKey && state.recipeOfWeek && state.recipeOfWeek.key === state.recipeCommunityKey) {
+    card.appendChild(el('span', { class: 'week-tag' }, "🌟 Recipe of the Week"));
+  }
+  card.appendChild(el('h2', { class: 'recipe-title' }, r.title || "House special"));
+  if (state.recipeCommunityKey && r.author && r.author.name) {
+    card.appendChild(el('div', { class: 'author-line' }, `Shared by ${r.author.name}`));
+  } else if (!state.recipeCommunityKey) {
+    card.appendChild(el('div', { class: 'author-line' }, "Cooked up by Harvey"));
+  }
+  if (r.description) card.appendChild(el('p', { class: 'recipe-desc' }, r.description));
+
+  if (r.equipment && r.equipment.length) {
+    card.appendChild(el('h3', { class: 'section-title' }, "You'll need"));
+    const ul = el('ul', { class: 'using-list' });
+    r.equipment.forEach(item => {
+      const name = typeof item === 'string' ? item : (item.name || "");
+      const note = typeof item === 'string' ? "" : (item.note || "");
+      const flagged = isEquipmentFlagged(name, r.equipmentAvailable);
+      ul.appendChild(el('li', { class: flagged ? 'flagged-equipment' : '' }, [
+        el('div', { html: flagged ? warnSvg() : panSvg(), style: flagged ? 'color:var(--brick);' : '' }),
+        el('div', {}, [
+          el('span', {}, name),
+          flagged ? el('div', { style: 'font-size:12.5px; color:var(--brick); margin-top:2px; line-height:1.45;' },
+            note ? `Not on your list — ${note}` : "Not on your list — swap for whatever similar equipment you do have.") :
+            (note ? el('span', { style: 'color:var(--ink-soft);' }, ` — ${note}`) : null)
+        ])
+      ]));
+    });
+    card.appendChild(ul);
+    card.appendChild(el('hr', { class: 'divider' }));
+  }
+
+  if (r.usedIngredients && r.usedIngredients.length) {
+    card.appendChild(el('h3', { class: 'section-title' }, "What you're using"));
+    const ul = el('ul', { class: 'using-list' });
+    r.usedIngredients.forEach(name => {
+      ul.appendChild(el('li', {}, [ el('div', { html: checkSvg() }), name ]));
+    });
+    card.appendChild(ul);
+    card.appendChild(el('hr', { class: 'divider' }));
+  }
+
+  if (r.steps && r.steps.length) {
+    card.appendChild(el('h3', { class: 'section-title' }, "Steps"));
+    const ol = el('ol', { class: 'steps' });
+    r.steps.forEach(s => {
+      ol.appendChild(el('li', {}, [
+        el('div', { class: 'step-body' }, [
+          el('div', { class: 'step-title' }, s.title || ""),
+          el('div', { class: 'step-detail' }, s.detail || "")
+        ])
+      ]));
+    });
+    card.appendChild(ol);
+  }
+
+  if (r.elevate && r.elevate.length) {
+    card.appendChild(el('hr', { class: 'divider' }));
+    card.appendChild(el('h3', { class: 'section-title' }, "Elevate it"));
+    r.elevate.forEach(item => {
+      const selected = state.selectedExtras.has(item.name);
+      const chip = el('button', {
+        class: 'elevate-chip' + (selected ? ' selected' : ''),
+        onclick: () => {
+          if (selected) state.selectedExtras.delete(item.name);
+          else state.selectedExtras.add(item.name);
+          render();
+        }
+      }, [
+        el('div', { class: 'elevate-check' }, selected ? el('div', { html: checkSvgSmall() }) : ""),
+        el('div', { class: 'elevate-text' }, [
+          el('div', { class: 'name' }, item.name),
+          el('div', { class: 'reason' }, item.reason || "")
+        ])
+      ]);
+      card.appendChild(chip);
+    });
+  }
+
+  if (r.staples && r.staples.length) {
+    card.appendChild(el('hr', { class: 'divider' }));
+    card.appendChild(el('h3', { class: 'section-title' }, "Staples worth keeping"));
+    const list = el('div', { class: 'staple-list' });
+    r.staples.forEach(item => {
+      list.appendChild(el('div', { class: 'staple-row' }, [
+        el('div', { class: 'dot' }),
+        el('div', {}, [
+          el('span', { class: 'name' }, item.name + " — "),
+          el('span', { class: 'reason' }, item.reason || "")
+        ])
+      ]));
+    });
+    card.appendChild(list);
+  }
+
+  wrap.appendChild(el('section', { class: 'recipe-wrap' }, [ card ]));
+
+  const actions = el('div', { class: 'panel recipe-actions' });
+  const isSaved = !!state.recipeSavedKey;
+  actions.appendChild(el('button', {
+    class: 'btn btn-outline btn-block' + (isSaved ? ' saved' : ''),
+    disabled: (state.saving || isSaved) ? 'true' : null,
+    onclick: isSaved ? () => {} : saveCurrentRecipe
+  }, state.saving ? "Saving…" : (isSaved ? "✓ Saved to your recipes" : "Save recipe")));
+  if (state.recipeCommunityKey && state.account) {
+    const isWeek = state.recipeOfWeek && state.recipeOfWeek.key === state.recipeCommunityKey;
+    actions.appendChild(el('button', {
+      class: 'btn btn-outline btn-block',
+      disabled: (state.flaggingWeek || isWeek) ? 'true' : null,
+      onclick: flagRecipeOfWeek
+    }, isWeek ? "🌟 Already Recipe of the Week" : (state.flaggingWeek ? "Flagging…" : "🌟 Flag as Recipe of the Week")));
+  }
+  if (state.selectedExtras.size > 0) {
+    actions.appendChild(el('button', {
+      class: 'btn btn-primary btn-block',
+      onclick: regenerateWithExtras
+    }, `Ask Harvey to add ${state.selectedExtras.size} thing${state.selectedExtras.size > 1 ? 's' : ''}`));
+  }
+  actions.appendChild(el('button', { class: 'start-over', onclick: startOver }, "Start over with new ingredients"));
+  wrap.appendChild(actions);
+
+  return wrap;
+}
+
+async function regenerateWithExtras() {
+  state.generatingRecipe = true;
+  render();
+  try {
+    const names = state.ingredients.map(i => i.name);
+    const extras = Array.from(state.selectedExtras);
+    const filters = Array.from(state.dietaryFilters);
+    const equipment = Array.from(state.equipmentFilters);
+    const recipe = await generateRecipe(names, extras, filters, equipment);
+    recipe.equipmentAvailable = equipment;
+    state.recipe = recipe;
+    state.recipeSavedKey = null;
+    state.recipeCommunityKey = null;
+    state.selectedExtras = new Set();
+  } catch (err) {
+    state.error = "Couldn't reach Harvey just now — try again in a moment.";
+  } finally {
+    state.generatingRecipe = false;
+    render();
+  }
+}
+
+async function saveCurrentRecipe() {
+  if (!state.recipe || state.recipeSavedKey) return;
+  state.saving = true;
+  render();
+  const key = `recipe:${Date.now()}`;
+  try {
+    const result = await window.storage.set(key, JSON.stringify(state.recipe), false);
+    if (result) {
+      state.recipeSavedKey = key;
+    } else {
+      state.error = "Couldn't save that recipe just now — try again.";
+    }
+  } catch (err) {
+    state.error = "Couldn't save that recipe just now — try again.";
+  } finally {
+    state.saving = false;
+    render();
+  }
+}
+
+async function loadSavedRecipes() {
+  state.loadingSaved = true;
+  render();
+  try {
+    const listResult = await window.storage.list('recipe:', false);
+    const keys = (listResult && listResult.keys) || [];
+    const items = [];
+    for (const key of keys) {
+      try {
+        const got = await window.storage.get(key, false);
+        if (got) items.push({ key, recipe: JSON.parse(got.value) });
+      } catch (innerErr) {
+        // skip unreadable entry
+      }
+    }
+    items.sort((a, b) => (a.key < b.key ? 1 : -1)); // newest first, keys are timestamp-based
+    state.savedRecipes = items;
+  } catch (err) {
+    state.error = "Couldn't load your saved recipes just now.";
+  } finally {
+    state.loadingSaved = false;
+    render();
+  }
+}
+
+function viewSavedRecipe(item) {
+  state.recipe = item.recipe;
+  state.recipeSavedKey = item.key;
+  state.recipeCommunityKey = null;
+  state.selectedExtras = new Set();
+  state.error = null;
+  state.screen = 'recipe';
+  render();
+}
+
+async function deleteSavedRecipe(key) {
+  try {
+    await window.storage.delete(key, false);
+    state.savedRecipes = state.savedRecipes.filter(item => item.key !== key);
+    if (state.recipeSavedKey === key) state.recipeSavedKey = null;
+    render();
+  } catch (err) {
+    state.error = "Couldn't remove that recipe just now.";
+    render();
+  }
+}
+
+// ---------- saved recipes screen ----------
+function renderSavedScreen() {
+  const wrap = el('div');
+  wrap.appendChild(renderTopNav());
+  wrap.appendChild(el('header', { class: 'top' }, [
+    el('h1', { class: 'eyebrow-free-title', style: 'font-size:22px;' }, "Saved recipes")
+  ]));
+
+  if (state.loadingSaved) {
+    wrap.appendChild(el('div', { class: 'loading-block' }, [
+      el('div', { class: 'spinner' }),
+      "Loading your recipes…"
+    ]));
+    return wrap;
+  }
+
+  if (state.error) {
+    wrap.appendChild(el('div', { class: 'error-block' }, [ el('div', {}, state.error) ]));
+  }
+
+  if (!state.savedRecipes.length) {
+    wrap.appendChild(el('div', { class: 'empty-state' }, "Nothing saved yet. Find a recipe you like and tap \"Save recipe\" to keep it here."));
+    return wrap;
+  }
+
+  const list = el('div', { class: 'saved-list' });
+  state.savedRecipes.forEach(item => {
+    const r = item.recipe;
+    list.appendChild(el('div', { class: 'saved-card' }, [
+      el('div', { class: 'info' }, [
+        el('div', { class: 't' }, r.title || "Untitled recipe"),
+        el('div', { class: 'm' }, [r.servings, r.time].filter(Boolean).join(" · "))
+      ]),
+      el('div', { class: 'col' }, [
+        el('button', { class: 'view', onclick: () => viewSavedRecipe(item) }, "View"),
+        el('button', { class: 'remove', onclick: () => deleteSavedRecipe(item.key) }, "Remove")
+      ])
+    ]));
+  });
+  wrap.appendChild(list);
+  return wrap;
+}
+
+function startOver() {
+  state.screen = 'input';
+  state.recipe = null;
+  state.recipeSavedKey = null;
+  state.recipeCommunityKey = null;
+  state.selectedExtras = new Set();
+  state.error = null;
+  render();
+}
+
+function warnSvg() {
+  return `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 4.5 21 19.5H3L12 4.5Z" stroke-linejoin="round"/><path d="M12 10v4.2" stroke-linecap="round"/><circle cx="12" cy="17" r="0.9" fill="currentColor" stroke="none"/></svg>`;
+}
+
+function panSvg() {
+  return `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><ellipse cx="10.5" cy="12" rx="7" ry="4"/><path d="M17.5 10.5H21a1.2 1.2 0 0 1 1.2 1.2v0A1.2 1.2 0 0 1 21 12.9h-2.2"/><path d="M6 9.2V8a2 2 0 0 1 2-2h5a2 2 0 0 1 2 2v1.2"/></svg>`;
+}
+
+function checkSvg() {
+  return `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12.5l4.5 4.5L19 7"/></svg>`;
+}
+function checkSvgSmall() {
+  return `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><path d="M5 12.5l4.5 4.5L19 7"/></svg>`;
+}
+
+// ---------- account ----------
+function renderAccountScreen() {
+  const wrap = el('div');
+  wrap.appendChild(renderTopNav());
+
+  const editing = state.accountEditing || !state.account;
+
+  wrap.appendChild(el('header', { class: 'top' }, [
+    el('h1', { class: 'eyebrow-free-title', style: 'font-size:22px;' }, state.account ? "Your account" : "Create your account"),
+    state.accountPromptReason ? el('p', {}, state.accountPromptReason) : (!state.account ? el('p', {}, "Just the basics — used to credit your shared recipes and personalize the app.") : null)
+  ]));
+
+  if (state.error) {
+    wrap.appendChild(el('div', { class: 'error-block' }, [ el('div', {}, state.error) ]));
+  }
+
+  if (!editing) {
+    const card = el('div', { class: 'account-card' }, [
+      el('div', { class: 'account-row' }, [ el('span', { class: 'label' }, "Name"), el('span', { class: 'value' }, state.account.name) ]),
+      el('div', { class: 'account-row' }, [ el('span', { class: 'label' }, "Age"), el('span', { class: 'value' }, String(state.account.age)) ]),
+      el('div', { class: 'account-row' }, [ el('span', { class: 'label' }, "Email"), el('span', { class: 'value' }, state.account.email) ]),
+      el('div', { class: 'account-row' }, [
+        el('span', { class: 'label' }, "Email status"),
+        el('span', { class: 'value ' + (state.account.verified ? 'verified' : 'unverified') }, state.account.verified ? "✓ Verified" : "Not verified")
+      ])
+    ]);
+    wrap.appendChild(el('section', { class: 'panel' }, [ card ]));
+    const actionsWrap = el('section', { class: 'panel recipe-actions' });
+    if (!state.account.verified) {
+      actionsWrap.appendChild(el('button', {
+        class: 'btn btn-primary btn-block',
+        onclick: () => beginVerification(state.account, 'account')
+      }, "Verify email"));
+    }
+    actionsWrap.appendChild(el('button', { class: 'btn btn-outline btn-block', onclick: () => { state.accountEditing = true; state.accountError = null; render(); } }, "Edit details"));
+    wrap.appendChild(actionsWrap);
+    return wrap;
+  }
+
+  const form = el('div');
+  form.appendChild(el('div', { class: 'field-group' }, [
+    el('label', { class: 'field-label' }, "Name"),
+    el('input', { class: 'field-input', type: 'text', id: 'accName', value: (state.account && state.account.name) || '' })
+  ]));
+  form.appendChild(el('div', { class: 'field-group' }, [
+    el('label', { class: 'field-label' }, "Age"),
+    el('input', { class: 'field-input', type: 'number', id: 'accAge', min: '1', max: '120', value: (state.account && state.account.age) || '' })
+  ]));
+  form.appendChild(el('div', { class: 'field-group' }, [
+    el('label', { class: 'field-label' }, "Email"),
+    el('input', { class: 'field-input', type: 'email', id: 'accEmail', value: (state.account && state.account.email) || '' }),
+    el('div', { class: 'field-hint' }, "You must be 13 or older to create an account.")
+  ]));
+
+  if (state.accountError) {
+    form.appendChild(el('div', { class: 'error-block', style: 'margin:16px 0 0;' }, [ el('div', {}, state.accountError) ]));
+  }
+
+  wrap.appendChild(el('section', { class: 'panel' }, [ form ]));
+  wrap.appendChild(el('section', { class: 'panel recipe-actions' }, [
+    el('button', {
+      class: 'btn btn-primary btn-block',
+      disabled: state.savingAccount ? 'true' : null,
+      onclick: saveAccount
+    }, state.savingAccount ? "Saving…" : "Save account"),
+    state.account ? el('button', { class: 'start-over', onclick: () => { state.accountEditing = false; state.accountError = null; render(); } }, "Cancel") : null
+  ]));
+
+  return wrap;
+}
+
+async function saveAccount() {
+  const name = (document.getElementById('accName').value || '').trim();
+  const ageRaw = (document.getElementById('accAge').value || '').trim();
+  const email = (document.getElementById('accEmail').value || '').trim();
+  const age = parseInt(ageRaw, 10);
+
+  if (!name) { state.accountError = "Please enter a name."; render(); return; }
+  if (!ageRaw || isNaN(age) || age < 13 || age > 120) { state.accountError = "You must enter an age of 13 or older to create an account."; render(); return; }
+  if (!/^\S+@\S+\.\S+$/.test(email)) { state.accountError = "Please enter a valid email address."; render(); return; }
+
+  state.savingAccount = true;
+  state.accountError = null;
+  render();
+  try {
+    const emailChanged = !state.account || state.account.email !== email;
+    const account = { name, age, email, verified: state.account && !emailChanged ? !!state.account.verified : false };
+    const result = await window.storage.set('account', JSON.stringify(account), false);
+    if (result) {
+      state.account = account;
+      state.accountEditing = false;
+      if (emailChanged) {
+        beginVerification(account, 'account');
+        return;
+      }
+      state.accountPromptReason = null;
+    } else {
+      state.accountError = "Couldn't save your account just now — try again.";
+    }
+  } catch (err) {
+    state.accountError = "Couldn't save your account just now — try again.";
+  } finally {
+    state.savingAccount = false;
+    render();
+  }
+}
+
+// ---------- community ----------
+function renderCommunityScreen() {
+  const wrap = el('div');
+  wrap.appendChild(renderTopNav());
+  wrap.appendChild(el('header', { class: 'top' }, [
+    el('h1', { class: 'eyebrow-free-title', style: 'font-size:22px;' }, "Community recipes"),
+    el('p', {}, "Recipes shared by other cooks using the app.")
+  ]));
+
+  wrap.appendChild(el('section', { class: 'panel' }, [
+    el('button', { class: 'btn btn-primary btn-block', onclick: onUploadTapped }, "Share a recipe")
+  ]));
+
+  if (state.error) {
+    wrap.appendChild(el('div', { class: 'error-block' }, [ el('div', {}, state.error) ]));
+  }
+
+  if (state.loadingCommunity) {
+    wrap.appendChild(el('div', { class: 'loading-block' }, [ el('div', { class: 'spinner' }), "Loading community recipes…" ]));
+    return wrap;
+  }
+
+  if (!state.communityRecipes.length) {
+    wrap.appendChild(el('div', { class: 'empty-state' }, "No community recipes yet — be the first to share one!"));
+    return wrap;
+  }
+
+  const list = el('div', { class: 'community-list' });
+  state.communityRecipes.forEach(item => {
+    const r = item.recipe;
+    const isWeek = state.recipeOfWeek && state.recipeOfWeek.key === item.key;
+    list.appendChild(el('div', { class: 'community-card' }, [
+      el('div', { class: 'info' }, [
+        isWeek ? el('span', { class: 'week-tag' }, "🌟 Recipe of the Week") : null,
+        el('div', { class: 't' }, r.title || "Untitled recipe"),
+        el('div', { class: 'm' }, [r.servings, r.time].filter(Boolean).join(" · ")),
+        r.author && r.author.name ? el('div', { class: 'a' }, `by ${r.author.name}`) : null
+      ]),
+      el('button', { class: 'view', onclick: () => viewCommunityRecipe(item) }, "View")
+    ]));
+  });
+  wrap.appendChild(list);
+  return wrap;
+}
+
+function onUploadTapped() {
+  if (!state.account) {
+    goToAccount("To share a recipe, create a quick account first.");
+    return;
+  }
+  if (!state.account.verified) {
+    beginVerification(state.account, 'upload');
+    return;
+  }
+  state.uploadError = null;
+  state.uploadDietaryTags = new Set();
+  state.screen = 'upload';
+  render();
+}
+
+async function loadCommunityRecipes() {
+  state.loadingCommunity = true;
+  render();
+  try {
+    const listResult = await window.storage.list('community:', true);
+    const keys = (listResult && listResult.keys) || [];
+    const items = [];
+    for (const key of keys) {
+      try {
+        const got = await window.storage.get(key, true);
+        if (got) items.push({ key, recipe: JSON.parse(got.value) });
+      } catch (innerErr) {
+        // skip unreadable entry
+      }
+    }
+    items.sort((a, b) => (a.key < b.key ? 1 : -1));
+    state.communityRecipes = items;
+  } catch (err) {
+    state.error = "Couldn't load community recipes just now.";
+  } finally {
+    state.loadingCommunity = false;
+    render();
+  }
+}
+
+function viewCommunityRecipe(item) {
+  state.recipe = item.recipe;
+  state.recipeCommunityKey = item.key;
+  state.recipeSavedKey = null;
+  state.selectedExtras = new Set();
+  state.error = null;
+  state.screen = 'recipe';
+  render();
+}
+
+// ---------- upload a recipe ----------
+function renderUploadScreen() {
+  const wrap = el('div');
+  wrap.appendChild(renderTopNav());
+  wrap.appendChild(el('header', { class: 'top' }, [
+    el('h1', { class: 'eyebrow-free-title', style: 'font-size:22px;' }, "Share a recipe"),
+    el('p', {}, "This will be visible to everyone using the app.")
+  ]));
+
+  const form = el('div');
+  form.appendChild(el('div', { class: 'field-group' }, [
+    el('label', { class: 'field-label' }, "Title"),
+    el('input', { class: 'field-input', type: 'text', id: 'upTitle', placeholder: "e.g. Weeknight lentil curry" })
+  ]));
+  form.appendChild(el('div', { class: 'field-group' }, [
+    el('label', { class: 'field-label' }, "Servings"),
+    el('input', { class: 'field-input', type: 'text', id: 'upServings', placeholder: "e.g. 4 servings" })
+  ]));
+  form.appendChild(el('div', { class: 'field-group' }, [
+    el('label', { class: 'field-label' }, "Time"),
+    el('input', { class: 'field-input', type: 'text', id: 'upTime', placeholder: "e.g. 35 min" })
+  ]));
+  form.appendChild(el('div', { class: 'field-group' }, [
+    el('label', { class: 'field-label' }, "Description"),
+    el('textarea', { class: 'field-input', id: 'upDescription', placeholder: "One or two sentences about the dish" })
+  ]));
+  form.appendChild(el('div', { class: 'field-group' }, [
+    el('label', { class: 'field-label' }, "Ingredients"),
+    el('textarea', { class: 'field-input', id: 'upIngredients', placeholder: "One per line" }),
+    el('div', { class: 'field-hint' }, "One ingredient per line.")
+  ]));
+  form.appendChild(el('div', { class: 'field-group' }, [
+    el('label', { class: 'field-label' }, "Equipment (optional)"),
+    el('textarea', { class: 'field-input', id: 'upEquipment', placeholder: "One per line" })
+  ]));
+  form.appendChild(el('div', { class: 'field-group' }, [
+    el('label', { class: 'field-label' }, "Steps"),
+    el('textarea', { class: 'field-input', id: 'upSteps', placeholder: "One step per line", style: 'min-height:120px;' }),
+    el('div', { class: 'field-hint' }, "One step per line, in order.")
+  ]));
+
+  const tagsWrap = el('div', { class: 'field-group' });
+  tagsWrap.appendChild(el('label', { class: 'field-label' }, "Dietary tags (optional)"));
+  const chips = el('div', { class: 'filter-chips' });
+  DIETARY_OPTIONS.forEach(opt => {
+    const active = state.uploadDietaryTags.has(opt);
+    chips.appendChild(el('button', {
+      class: 'filter-chip' + (active ? ' active' : ''),
+      onclick: () => {
+        if (active) state.uploadDietaryTags.delete(opt);
+        else state.uploadDietaryTags.add(opt);
+        render();
+      }
+    }, opt));
+  });
+  tagsWrap.appendChild(chips);
+  form.appendChild(tagsWrap);
+
+  if (state.uploadError) {
+    form.appendChild(el('div', { class: 'error-block', style: 'margin:16px 0 0;' }, [ el('div', {}, state.uploadError) ]));
+  }
+
+  wrap.appendChild(el('section', { class: 'panel' }, [ form ]));
+  wrap.appendChild(el('section', { class: 'panel recipe-actions' }, [
+    el('button', {
+      class: 'btn btn-primary btn-block',
+      disabled: state.submittingUpload ? 'true' : null,
+      onclick: submitCommunityRecipe
+    }, state.submittingUpload ? "Sharing…" : "Share recipe"),
+    el('button', { class: 'start-over', onclick: goToCommunity }, "Cancel")
+  ]));
+
+  return wrap;
+}
+
+async function submitCommunityRecipe() {
+  const title = (document.getElementById('upTitle').value || '').trim();
+  const servings = (document.getElementById('upServings').value || '').trim();
+  const time = (document.getElementById('upTime').value || '').trim();
+  const description = (document.getElementById('upDescription').value || '').trim();
+  const ingredients = (document.getElementById('upIngredients').value || '').split('\n').map(s => s.trim()).filter(Boolean);
+  const equipment = (document.getElementById('upEquipment').value || '').split('\n').map(s => s.trim()).filter(Boolean);
+  const stepLines = (document.getElementById('upSteps').value || '').split('\n').map(s => s.trim()).filter(Boolean);
+
+  if (!title) { state.uploadError = "Please add a title."; render(); return; }
+  if (!ingredients.length) { state.uploadError = "Add at least one ingredient."; render(); return; }
+  if (!stepLines.length) { state.uploadError = "Add at least one step."; render(); return; }
+  if (!state.account) { state.uploadError = "Please create an account first."; render(); return; }
+
+  const recipe = {
+    title,
+    servings,
+    time,
+    description,
+    usedIngredients: ingredients,
+    equipment,
+    steps: stepLines.map((line, i) => ({ title: `Step ${i + 1}`, detail: line })),
+    dietaryTags: Array.from(state.uploadDietaryTags),
+    author: { name: state.account.name },
+    createdAt: Date.now(),
+  };
+
+  state.submittingUpload = true;
+  state.uploadError = null;
+  render();
+  try {
+    const key = `community:${Date.now()}`;
+    const result = await window.storage.set(key, JSON.stringify(recipe), true);
+    if (result) {
+      goToCommunity();
+    } else {
+      state.uploadError = "Couldn't share that recipe just now — try again.";
+    }
+  } catch (err) {
+    state.uploadError = "Couldn't share that recipe just now — try again.";
+  } finally {
+    state.submittingUpload = false;
+    render();
+  }
+}
+
+// ---------- recipe of the week ----------
+async function loadRecipeOfWeek() {
+  try {
+    const got = await window.storage.get('recipe-of-the-week', true);
+    if (got) state.recipeOfWeek = JSON.parse(got.value);
+  } catch (err) {
+    // none set yet
+  }
+  render();
+}
+
+async function flagRecipeOfWeek() {
+  if (!state.recipeCommunityKey || !state.recipe) return;
+  state.flaggingWeek = true;
+  render();
+  try {
+    const payload = {
+      key: state.recipeCommunityKey,
+      title: state.recipe.title,
+      author: state.recipe.author && state.recipe.author.name
+    };
+    const result = await window.storage.set('recipe-of-the-week', JSON.stringify(payload), true);
+    if (result) {
+      state.recipeOfWeek = payload;
+    } else {
+      state.error = "Couldn't flag that recipe just now — try again.";
+    }
+  } catch (err) {
+    state.error = "Couldn't flag that recipe just now — try again.";
+  } finally {
+    state.flaggingWeek = false;
+    render();
+  }
+}
+
+async function viewRecipeOfWeek() {
+  if (!state.recipeOfWeek) return;
+  try {
+    const got = await window.storage.get(state.recipeOfWeek.key, true);
+    if (got) {
+      viewCommunityRecipe({ key: state.recipeOfWeek.key, recipe: JSON.parse(got.value) });
+    }
+  } catch (err) {
+    state.error = "Couldn't open that recipe just now.";
+    render();
+  }
+}
+
+// ---------- email verification ----------
+function generateVerificationCode() {
+  return String(Math.floor(100000 + Math.random() * 900000));
+}
+
+function beginVerification(account, returnScreen) {
+  state.pendingVerificationCode = generateVerificationCode();
+  state.verificationError = null;
+  state.verifyReturnScreen = returnScreen || 'account';
+  state.screen = 'verify';
+  render();
+}
+
+function renderVerifyScreen() {
+  const wrap = el('div');
+  wrap.appendChild(renderTopNav());
+  wrap.appendChild(el('header', { class: 'top' }, [
+    el('h1', { class: 'eyebrow-free-title', style: 'font-size:22px;' }, "Verify your email"),
+    el('p', {}, `Enter the 6-digit code we've sent to ${state.account ? state.account.email : 'your email'}.`)
+  ]));
+
+  wrap.appendChild(el('section', { class: 'panel' }, [
+    el('div', { class: 'code-display' }, [
+      el('div', { class: 'digits' }, state.pendingVerificationCode || "------"),
+      el('div', { class: 'caption' }, "This prototype has no email server, so the code is shown here instead of being emailed. In the real app, this box wouldn't exist — the code would only arrive in your inbox.")
+    ])
+  ]));
+
+  const form = el('div');
+  form.appendChild(el('div', { class: 'field-group' }, [
+    el('label', { class: 'field-label' }, "Enter code"),
+    el('input', { class: 'code-input', type: 'text', inputmode: 'numeric', maxlength: '6', id: 'verifyCode', placeholder: '000000' })
+  ]));
+  if (state.verificationError) {
+    form.appendChild(el('div', { class: 'error-block', style: 'margin:16px 0 0;' }, [ el('div', {}, state.verificationError) ]));
+  }
+  wrap.appendChild(el('section', { class: 'panel' }, [ form ]));
+
+  wrap.appendChild(el('section', { class: 'panel recipe-actions' }, [
+    el('button', {
+      class: 'btn btn-primary btn-block',
+      disabled: state.verifyingCode ? 'true' : null,
+      onclick: submitVerificationCode
+    }, state.verifyingCode ? "Checking…" : "Verify"),
+    el('button', { class: 'start-over', onclick: () => beginVerification(state.account, state.verifyReturnScreen) }, "Send a new code")
+  ]));
+
+  return wrap;
+}
+
+async function submitVerificationCode() {
+  const input = (document.getElementById('verifyCode').value || '').trim();
+  if (input !== state.pendingVerificationCode) {
+    state.verificationError = "That code doesn't match — check the code above and try again.";
+    render();
+    return;
+  }
+  state.verifyingCode = true;
+  render();
+  try {
+    const account = { ...state.account, verified: true };
+    const result = await window.storage.set('account', JSON.stringify(account), false);
+    if (result) {
+      state.account = account;
+      state.pendingVerificationCode = null;
+      state.verificationError = null;
+      state.screen = state.verifyReturnScreen === 'upload' ? 'upload' : 'account';
+      if (state.screen === 'upload') {
+        state.uploadError = null;
+        state.uploadDietaryTags = new Set();
+      }
+    } else {
+      state.verificationError = "Couldn't confirm verification just now — try again.";
+    }
+  } catch (err) {
+    state.verificationError = "Couldn't confirm verification just now — try again.";
+  } finally {
+    state.verifyingCode = false;
+    render();
+  }
+}
+
+// ---------- boot ----------
+async function init() {
+  try {
+    const acc = await window.storage.get('account', false);
+    if (acc) state.account = JSON.parse(acc.value);
+  } catch (err) {
+    // no account yet
+  }
+  state.accountLoaded = true;
+  render();
+  loadRecipeOfWeek();
+}
+
+init();
+</script>
+</body>
+</html>
