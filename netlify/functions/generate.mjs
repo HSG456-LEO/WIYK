@@ -1,30 +1,30 @@
 // This function runs on Netlify's servers, never in the user's browser.
-// Your Anthropic API key lives only here (as an environment variable),
+// The Anthropic API key is injected automatically by Netlify's AI Gateway,
 // so it's never exposed to anyone using the app.
 
-exports.handler = async function (event) {
-  if (event.httpMethod !== "POST") {
-    return { statusCode: 405, body: JSON.stringify({ error: "Method not allowed" }) };
+export default async (req) => {
+  if (req.method !== "POST") {
+    return Response.json({ error: "Method not allowed" }, { status: 405 });
   }
 
   const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!apiKey) {
-    return {
-      statusCode: 500,
-      body: JSON.stringify({ error: "Server is not configured with an API key yet." })
-    };
+    return Response.json(
+      { error: "Server is not configured with an API key yet." },
+      { status: 500 }
+    );
   }
 
   let payload;
   try {
-    payload = JSON.parse(event.body || "{}");
+    payload = await req.json();
   } catch (err) {
-    return { statusCode: 400, body: JSON.stringify({ error: "Invalid request body" }) };
+    return Response.json({ error: "Invalid request body" }, { status: 400 });
   }
 
   const { messages, max_tokens } = payload;
   if (!messages) {
-    return { statusCode: 400, body: JSON.stringify({ error: "Missing messages" }) };
+    return Response.json({ error: "Missing messages" }, { status: 400 });
   }
 
   // The model is fixed here, server-side, so the app in the browser can never
@@ -35,7 +35,7 @@ exports.handler = async function (event) {
   const MODEL = "claude-sonnet-5";
 
   try {
-    const response = await fetch("https://api.anthropic.com/v1/messages", {
+    const response = await fetch(`${process.env.ANTHROPIC_BASE_URL}/v1/messages`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -52,18 +52,14 @@ exports.handler = async function (event) {
     const data = await response.json();
 
     if (!response.ok) {
-      return {
-        statusCode: response.status,
-        body: JSON.stringify({ error: data.error ? data.error.message : "Anthropic API error" })
-      };
+      return Response.json(
+        { error: data.error ? data.error.message : "Anthropic API error" },
+        { status: response.status }
+      );
     }
 
-    return {
-      statusCode: 200,
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data)
-    };
+    return Response.json(data);
   } catch (err) {
-    return { statusCode: 500, body: JSON.stringify({ error: "Failed to reach Anthropic API" }) };
+    return Response.json({ error: "Failed to reach Anthropic API" }, { status: 500 });
   }
 };
